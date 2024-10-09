@@ -39,7 +39,7 @@ export default function Home() {
     try {
       await fetch(`/api/interpretations/${id}`, { method: "DELETE" });
       setInterpretations((prevInterpretations) => prevInterpretations?.filter((i) => i.$id !== id));
-    } catch (error) {
+    } catch {
       setError("Failed to delete interpretation. Please try again");
     }
   };

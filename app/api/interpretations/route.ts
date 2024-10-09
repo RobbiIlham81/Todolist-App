@@ -7,7 +7,7 @@ const database = new Databases(client);
 // Create Interpretations
 async function createInterpretation(data: { term: string; interpretation: string }) {
   try {
-    const response = await database.createDocument(process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string, "Interpretations", ID.unique(), data);
+    const response = await database.createDocument(process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string, process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID as string, ID.unique(), data);
     return response;
   } catch (error) {
     console.error("Error creating interpretation", error);
@@ -18,7 +18,7 @@ async function createInterpretation(data: { term: string; interpretation: string
 // Fetch Interpretations
 async function fetchInterpretations() {
   try {
-    const response = await database.listDocuments(process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string, "Interpretations", [Query.orderDesc("$createdAt")]);
+    const response = await database.listDocuments(process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string, process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID as string, [Query.orderDesc("$createdAt")]);
     return response.documents;
   } catch (error) {
     console.error("Error fetching interpretations", error);

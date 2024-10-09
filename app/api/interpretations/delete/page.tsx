@@ -20,7 +20,7 @@ export default function EditPage({ params }: { params: { id: string } }) {
 
         const data = await response.json();
         setFormData({ term: data.interpretation.term, interpretation: data.interpretation.interpretation });
-      } catch (error) {
+      } catch {
         setError("Failed to load interpretation.");
       }
     };
