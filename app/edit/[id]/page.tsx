@@ -21,14 +21,17 @@ export default function EditPage({ params }: { params: { id: string } }) {
         const data = await response.json();
         console.log(data);
 
-        setFormData({ term: data.interpretation.term, interpretation: data.interpretation.interpretation });
+        setFormData({
+          term: data.interpretation.term,
+          interpretation: data.interpretation.interpretation,
+        });
       } catch (error) {
         setError("Failed to load interpretation.");
       }
     };
 
     fetchData();
-  }, []);
+  }, [params.id]); // Added params.id as a dependency
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prevData) => ({
@@ -51,18 +54,18 @@ export default function EditPage({ params }: { params: { id: string } }) {
       const response = await fetch(`/api/interpretations/${params.id}`, {
         method: "PUT",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json", // Use capital C for 'Content-Type'
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create interpretation");
+        throw new Error("Failed to update interpretation");
       }
 
-      router.push("/");
+      router.push("/"); // Redirect after successful update
     } catch (error) {
-      console.log(error);
+      console.error(error); // Log the actual error
       setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -71,16 +74,15 @@ export default function EditPage({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      {" "}
-      <div>
-        <h2 className="text-2xl font-bold my-8">Edit Task</h2>
-        <form onSubmit={handleSubmit} className="flex gap-3 flex-col">
-          <input type="text" name="term" placeholder="term" value={formData.term} onChange={handleInputChange} className="py-1 px-4 border rounded-md" />
-          <textarea name="interpretation" rows={4} placeholder="interpretation" value={formData.interpretation} onChange={handleInputChange} className="py-1 px-4 border rounded-md resize-none"></textarea>
-          <button className="bg-black text-white mt-5 px-4 py-1 rounded-md cursor-pointer">{isLoading ? "Updating..." : "Updating Task"}</button>
-        </form>
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-      </div>
+      <h2 className="text-2xl font-bold my-8">Edit Task</h2>
+      <form onSubmit={handleSubmit} className="flex gap-3 flex-col">
+        <input type="text" name="term" placeholder="Term" value={formData.term} onChange={handleInputChange} className="py-1 px-4 border rounded-md" />
+        <textarea name="interpretation" rows={4} placeholder="Interpretation" value={formData.interpretation} onChange={handleInputChange} className="py-1 px-4 border rounded-md resize-none"></textarea>
+        <button className="bg-black text-white mt-5 px-4 py-1 rounded-md cursor-pointer" type="submit">
+          {isLoading ? "Updating..." : "Update Task"}
+        </button>
+      </form>
+      {error && <p className="text-red-500 mt-4">{error}</p>}
     </div>
   );
 }
