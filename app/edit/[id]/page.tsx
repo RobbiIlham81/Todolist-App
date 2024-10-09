@@ -21,12 +21,22 @@ export default function EditPage({ params }: { params: { id: string } }) {
         const data = await response.json();
         console.log(data);
 
-        setFormData({
-          term: data.interpretation.term,
-          interpretation: data.interpretation.interpretation,
-        });
+        // Periksa apakah data.interpretation ada
+        if (data.interpretation) {
+          setFormData({
+            term: data.interpretation.term,
+            interpretation: data.interpretation.interpretation,
+          });
+        } else {
+          throw new Error("Interpretation not found");
+        }
       } catch (error) {
-        setError("Failed to load interpretation.");
+        // Pastikan error yang ditangkap memiliki pesan
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Failed to load interpretation.");
+        }
       }
     };
 
@@ -65,8 +75,12 @@ export default function EditPage({ params }: { params: { id: string } }) {
 
       router.push("/"); // Redirect after successful update
     } catch (error) {
-      console.error(error); // Log the actual error
-      setError("Something went wrong. Please try again.");
+      // Pastikan error yang ditangkap memiliki pesan
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
